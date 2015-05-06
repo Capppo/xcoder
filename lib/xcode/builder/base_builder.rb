@@ -31,6 +31,11 @@ module Xcode
         system("which pod > /dev/null 2>&1")
       end
 
+      def cocoapods_needed?
+        not podfile = File.join(File.dirname(@target.project.path), "Podfile.lock")
+        not File.exists? podfile
+      end
+
       def has_dependencies?
         podfile = File.join(File.dirname(@target.project.path), "Podfile")
         File.exists? podfile
@@ -40,7 +45,7 @@ module Xcode
       # If a Podfile exists, perform a pod install
       #
       def dependencies
-        if has_dependencies? and cocoapods_installed?
+        if has_dependencies? and cocoapods_installed? and cocoapods_needed?
           print_task :builder, "Fetch depencies", :notice
           podfile = File.join(File.dirname(@target.project.path), "Podfile")
    
